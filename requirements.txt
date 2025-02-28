@@ -1,4 +1,5 @@
-Flask==2.2.3  # Версия ниже 2.3.0 (без ошибки)
-Flask-Babel==2.0.0
+Flask==2.2.3  # 
+Flask-Babel==2.3.0  
 Flask-CORS==3.0.10
 gunicorn==20.1.0
+Werkzeug==2.2.3  
