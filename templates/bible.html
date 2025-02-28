@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('Библия') }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rock+Letter&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>{{ _('Библия') }}</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home', lang=get_locale()) }}">{{ _('Главная') }}</a></li>
+                <li><a href="{{ url_for('bible', lang=get_locale()) }}">{{ _('Библия') }}</a></li>
+                <li><a href="{{ url_for('groups', lang=get_locale()) }}">{{ _('Группы') }}</a></li>
+                <li><a href="{{ url_for('events', lang=get_locale()) }}">{{ _('Мероприятия') }}</a></li>
+                <li><a href="{{ url_for('about', lang=get_locale()) }}">{{ _('О нас') }}</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <img src="{{ url_for('static', filename='bible_image.jpg') }}" alt="Библия" />
+            <div class="text-overlay">
+                <div class="container">
+                    <h2>{{ _('Текст Библии') }}</h2>
+                    <!-- Change the button text to 'Читать' -->
+                    <button id="openBibleButton">{{ _('Открыть Библию') }}</button>
+
+                    <!-- Hide the content container initially -->
+                    <div id="content-container" style="display: none;">
+                        <pre id="bible-content"></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Faith Project. {{ _('Все права защищены.') }}</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const contentContainer = document.getElementById("content-container");
+            const bibleContent = document.getElementById("bible-content");
+
+            // Load bible content function
+            async function loadBible() {
+                const language = "{{ get_locale() }}"; // current language
+                const filePath = "{{ url_for('static', filename='bible/Biblia_' ~ get_locale() ~ '.json') }}";
+
+                console.log(filePath);  // Log the file path for debugging
+
+                try {
+                    const response = await fetch(filePath);
+                    if (!response.ok) throw new Error("Bible loading error");
+
+                    const content = await response.json();
+                    bibleContent.textContent = JSON.stringify(content, null, 2);
+                    contentContainer.style.display = "block"; // Show content after loading
+                } catch (error) {
+                    console.error("Bible loading error:", error);
+                    bibleContent.textContent = "Failed to load the Bible content.";
+                    contentContainer.style.display = "block"; // Show error message
+                }
+            }
+
+            // Wait for the button click to load Bible
+            const openBibleButton = document.getElementById("openBibleButton");
+            openBibleButton.addEventListener("click", loadBible);
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const openBibleButton = document.getElementById("openBibleButton");
+
+            openBibleButton.addEventListener("click", () => {
+                const lang = "{{ get_locale() }}"; // 
+                const url = `/bible/content?lang=${lang}`;
+
+                window.open(url, '_blank'); // Open Bible in new window
+            });
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1>{{ _('Добро пожаловать на Faith Project') }}</h1>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('home', lang=get_locale()) }}">{{ _('Главная') }}</a></li>
+                    <li><a href="{{ url_for('bible', lang=get_locale()) }}">{{ _('Библия') }}</a></li>
+                    <li><a href="{{ url_for('groups', lang=get_locale()) }}">{{ _('Группы') }}</a></li>
+                    <li><a href="{{ url_for('events', lang=get_locale()) }}">{{ _('Мероприятия') }}</a></li>
+                    <li><a href="{{ url_for('about', lang=get_locale()) }}">{{ _('О нас') }}</a></li>
+                </ul>
+                <!-- choise of langugage -->
+                <form id="language-form">
+                    <select name="language" onchange="changeLanguage(event)">
+                        <option value="en" {% if get_locale() == 'en' %}selected{% endif %}>English</option>
+                        <option value="ru" {% if get_locale() == 'ru' %}selected{% endif %}>Русский</option>
+                        <option value="pl" {% if get_locale() == 'pl' %}selected{% endif %}>Polski</option>
+                    </select>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <img src="{{ url_for('static', filename='justjezus.jpg') }}" alt="jezuz_1">
+            <div class="text-overlay">
+                <h2>{{ _('Добро пожаловать на этот сайт!') }}</h2>
+                <p>{{ _('Этот проект создан для <strong>верующих</strong> и тех, кто <strong>хочет узнать больше об Иисусе</strong>. Наша цель — помочь людям <strong>глубже понять Библию</strong> и найти <strong>единомышленников</strong>.') }}</p>
+                <ul>
+                    <li>{{ _('📖 Доступ к Библии на <strong>трех языках</strong> с <strong>поиском</strong> по ключевым словам и стихам.') }}</li>
+                    <li>{{ _('📅 Раздел <strong>«Мероприятия»</strong> с календарем и информацией о встречах.') }}</li>
+                    <li>{{ _('👥 Раздел <strong>«Группы»</strong> для общения и изучения Писания.') }}</li>
+                    <li>{{ _('✨ В разработке — <strong>новые функции</strong>. Следите за обновлениями! 😉') }}</li>
+                </ul>
+                <p><strong>{{ _('Поддержите проект — расскажите о нем друзьям!') }}</strong></p>
+            </div>
+        </section>
+
+        <div class="container">
+            <p>{{ _('Здесь вы найдете Библию, ссылки на группы верующих и информацию о предстоящих мероприятиях.') }}</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Faith Project. {{ _('Все права защищены.') }}</p>
+    </footer>
+
+    <!-- skript for  change language -->
+    <script>
+        function changeLanguage(event) {
+            const lang = event.target.value;
+            window.location.href = `/set_language/${lang}`;
+        }
+    </script>
+</body>
+
+</html>
+ы
