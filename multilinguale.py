@@ -3,6 +3,9 @@ from flask_babel import Babel, gettext as _
 from flask_cors import CORS
 import os
 import json
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 CORS(app)
