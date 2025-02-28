@@ -3,26 +3,29 @@ from flask_babel import Babel, gettext as _
 from flask_cors import CORS
 import os
 import json
-import sh
 
 app = Flask(__name__)
 CORS(app)
 
 # Настройка Babel
-app.config['BABEL_DEFAULT_LOCALE'] = 'ru'
+app.config['BABEL_DEFAULT_LOCALE'] = os.getenv('BABEL_DEFAULT_LOCALE', 'ru')
 app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
-app.config['LANGUAGES'] = ['en', 'ru', 'pl']
+app.config['LANGUAGES'] = os.getenv('LANGUAGES', 'en,ru,pl').split(',')
 
 babel = Babel(app)
 
-# Определяем язык из параметра URL или cookies
+# Определяем язык
+@babel.localeselector
 def get_locale():
     lang = request.args.get('lang')
     if lang in app.config['LANGUAGES']:
         return lang
-    return request.cookies.get('language') or request.accept_languages.best_match(app.config['LANGUAGES'])
 
-babel.locale_selector_func = get_locale
+    cookie_lang = request.cookies.get('language')
+    if cookie_lang in app.config['LANGUAGES']:
+        return cookie_lang
+
+    return request.accept_languages.best_match(app.config['LANGUAGES']) or app.config['BABEL_DEFAULT_LOCALE']
 
 # Делаем get_locale() доступной в шаблонах
 @app.context_processor
@@ -69,11 +72,12 @@ def about():
 @app.route('/set_language/<lang>')
 def set_language(lang):
     if lang not in app.config['LANGUAGES']:
-        lang = 'ru'
+        lang = app.config['BABEL_DEFAULT_LOCALE']
     resp = make_response(redirect(request.referrer or url_for('home')))
-    resp.set_cookie('language', lang)
+    resp.set_cookie('language', lang, max_age=365*24*60*60)
     return resp
 
+# Запуск приложения
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 5000))  
+    port = int(os.getenv('PORT', 5000))  # Render подставит свой порт
     app.run(host='0.0.0.0', port=port)
